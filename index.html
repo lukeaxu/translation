@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			table,
+			th,
+			td {
+				border: 1px solid black;
+			}
+		</style>
+	</head>
+	<body>
+
+		<h2>Translation Working Task</h2>
+
+		<table style="width:100%" id="work_out_list">
+			<!-- <tr> -->
+			<!-- article.date -->
+			<!-- <th>Date</th> -->
+			<!-- article.title if aritle.url exists then add to <a> tag-->
+			<!-- <th>Title(or Links)</th> -->
+			<!-- article.workout.title if article.workout.url exists then add <a> tag-->
+			<!-- <th>Workout</th> -->
+			<!-- article.workout.current_status -->
+			<!-- <th>Status</th> -->
+			<!-- article.other -->
+			<!-- <th>Other</th> -->
+			<!-- </tr> -->
+		</table>
+		<script>
+			// Table Structure
+			var work_out_list = document.getElementById("work_out_list");
+			const table_structure = {
+				date: {
+					title: "Date",
+					content: "date",
+				},
+				source: {
+					title: "Source(or Links)",
+					content: "source.title",
+					url: "title.url"
+				},
+				workout: {
+					title: "Workout",
+					content: "workout.title",
+					url: "workout.url"
+				},
+				status: {
+					title: "Status",
+					content: "status",
+					type: "Array"
+				},
+				other: {
+					title: "Other",
+					content: "other"
+				}
+			}
+			var header = work_out_list.createTHead();
+			var row = header.insertRow();
+			for (const [key, value] of Object.entries(table_structure)) {
+				cell = row.insertCell()
+				cell.innerHTML = value.title
+			}
+			work_out_list.appendChild(document.createElement('tbody'))
+			var tbody = work_out_list.getElementsByTagName('tbody')[0]
+
+			function generateTable(task_list) {
+				task_list.forEach((task, index) => {
+					var row = tbody.insertRow(index)
+					var cell = row.insertCell()
+					cell.innerHTML = task.date
+					var cell = row.insertCell()
+					cell.innerHTML = task.source.title
+					var cell = row.insertCell()
+					cell.innerHTML = task.workout.title
+					var cell = row.insertCell()
+					cell.innerHTML = task.status[0].code
+					var cell = row.insertCell()
+					cell.innerHTML = task.other
+				})
+			}
+			const xhr = new XMLHttpRequest(),
+				method = 'GET',
+				url = './data.json'
+			xhr.open(method, url, true);
+			xhr.onreadystatechange = function() {
+				// In local files, status is 0 upon success in Mozilla Firefox
+				if (xhr.readyState === XMLHttpRequest.DONE) {
+					var status = xhr.status;
+					if (status === 0 || (status >= 200 && status < 400)) {
+						generateTable(JSON.parse(xhr.responseText))
+					}
+				}
+			};
+			xhr.send();
+		</script>
+	</body>
+</html>
